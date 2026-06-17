@@ -57,16 +57,40 @@ purpose, to avoid needing to allowlist `images.unsplash.com` in
 
 ## Design tokens
 
-| Token        | Hex       | Use                                  |
-|--------------|-----------|---------------------------------------|
-| `bg`         | `#0a0a0a` | Page background                      |
-| `surface`    | `#121212` | Reserved for lifted panels/modals    |
-| `fg`         | `#f5f5f0` | Primary text (warm stark white)      |
-| `muted`      | `#8a8a85` | Secondary text, labels               |
-| `emerald`    | `#2ee6a8` | Primary neon accent                  |
-| `cyan`       | `#5be3ff` | Secondary accent (particle gradient) |
+| Token       | Source                          | Use                                  |
+|-------------|----------------------------------|---------------------------------------|
+| `neutral-950` | Tailwind built-in (`#0a0a0a`)  | Page background                      |
+| `neutral-50`  | Tailwind built-in (~white)    | Headers, high-contrast text          |
+| `neutral-400` | Tailwind built-in (light grey)| Paragraph/body copy                  |
+| `neutral-800/50` | Tailwind built-in          | Hairline borders on glass panels     |
+| `champagne` | Custom token, `#d4af37`         | The one accent — buttons, eyebrows, icons, active states. Used sparingly. |
 
-Fonts: **Fraunces** (display, used sparingly for headlines), **Inter** (body), **JetBrains Mono** (clinical labels, codes, prices). All loaded via `next/font/google` — no extra network requests to manage.
+There's deliberately no second accent hue anymore — the old emerald/cyan
+duo is gone. Where the particle field needs visual depth (`NeuralField.tsx`),
+it varies *lightness* within the champagne hue (a deep bronze `#5a4115` at
+the dark end) rather than introducing a second color, so the canvas reads
+as "subtle gold texture" rather than "neon."
+
+Fonts: a single clean sans (**Inter**) for both display and body text —
+headers lean on `font-bold tracking-tighter` for visual weight instead of
+a second typeface. **JetBrains Mono** still handles clinical labels, codes,
+and prices.
+
+## Canvas restraint
+
+The 3D layer is intentionally backed off so it never competes with text:
+
+- The entire `<Canvas>` wrapper in `SceneCanvas.tsx` carries `opacity-35` —
+  applied once to the wrapper div, which dims nodes, edges, pulses and
+  Bloom together, rather than tuning five separate material opacities.
+- Bloom `intensity` was dropped from `1.4` to `0.9` and `luminanceThreshold`
+  raised to `0.25`, so it glows just enough to read as ambient light rather
+  than as the page's main visual event.
+- Every text block additionally sits on its own `GlassPanel`
+  (`backdrop-blur-xl bg-neutral-950/60 border-neutral-800/50`) — even with
+  the canvas this restrained, legibility doesn't rely on opacity alone.
+
+
 
 ## Performance & memory notes
 
@@ -80,6 +104,6 @@ Fonts: **Fraunces** (display, used sparingly for headlines), **Inter** (body), *
 ## Customizing
 
 - **Copy/branding**: clinic name and copy live directly in each section component — there's no CMS layer, by design, since this is a single static page.
-- **Colors**: edit `tailwind.config.ts` → `theme.extend.colors`. The particle gradient (`EMERALD`/`CYAN` consts in `ParticleField.tsx`) is separate from Tailwind and should be updated to match if you change the palette.
-- **Particle density**: change the `count` prop passed to `<ParticleField />` in `SceneCanvas.tsx`.
-- **Bloom intensity**: tune `intensity` / `luminanceThreshold` on the `<Bloom>` element in `SceneCanvas.tsx` — lower the threshold to make more of the scene glow, raise `intensity` for a hotter look.
+- **Colors**: the accent lives in `tailwind.config.ts` → `theme.extend.colors.champagne`. Everything else uses Tailwind's built-in `neutral-*` scale directly in each component's classes (no alias) — change those class names directly if you want a different base palette. The particle gradient (`CHAMPAGNE`/`DEEP_BRONZE` consts in `NeuralField.tsx`) is separate from Tailwind and should be updated to match if you change the accent.
+- **Particle density**: change the `nodeCount` prop passed to `<NeuralField />` in `SceneCanvas.tsx`. More nodes also means more edges (capped at 700) and a slightly heavier nearest-neighbour computation on mount.
+- **Canvas presence**: the `opacity-35` wrapper class in `SceneCanvas.tsx` is the single dial for "how much background." Raise it if the canvas feels too faint after a palette change; the Bloom `intensity`/`luminanceThreshold` props are the next lever if it's the glow specifically that's too strong or too weak.

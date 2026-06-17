@@ -27,24 +27,24 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        scrolled ? "border-b border-white/10 bg-black/50 backdrop-blur-md" : "bg-transparent"
+        scrolled ? "border-b border-neutral-800/50 bg-neutral-950/60 backdrop-blur-xl" : "bg-transparent"
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 sm:px-10 lg:px-16">
-        <a href="#" className="flex items-center gap-2 font-mono text-sm uppercase tracking-[0.25em] text-fg">
-          <Sparkles className="h-4 w-4 text-emerald" aria-hidden="true" />
+        <a href="#" className="flex items-center gap-2 font-mono text-sm uppercase tracking-[0.25em] text-neutral-50">
+          <Sparkles className="h-4 w-4 text-champagne" aria-hidden="true" />
           AXIOM
         </a>
 
-        <div className="hidden items-center gap-10 font-mono text-xs uppercase tracking-wider text-muted sm:flex">
+        <div className="hidden items-center gap-10 font-mono text-xs uppercase tracking-wider text-neutral-400 sm:flex">
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} className="transition-colors hover:text-fg">
+            <a key={l.href} href={l.href} className="transition-colors hover:text-neutral-50">
               {l.label}
             </a>
           ))}
           <a
             href="#consultation"
-            className="rounded-full border border-emerald/40 px-4 py-2 text-fg transition-colors hover:border-emerald"
+            className="rounded-full border border-champagne/40 px-4 py-2 text-neutral-50 transition-colors hover:border-champagne"
           >
             Book
           </a>
@@ -52,7 +52,7 @@ export default function Navbar() {
 
         <button
           onClick={() => setOpen((v) => !v)}
-          className="text-fg sm:hidden"
+          className="text-neutral-50 sm:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
         >
@@ -61,17 +61,17 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="border-t border-white/10 bg-black/80 px-6 py-6 backdrop-blur-md sm:hidden">
-          <div className="flex flex-col gap-5 font-mono text-sm uppercase tracking-wider text-muted">
+        <div className="border-t border-neutral-800/50 bg-neutral-950/80 px-6 py-6 backdrop-blur-xl sm:hidden">
+          <div className="flex flex-col gap-5 font-mono text-sm uppercase tracking-wider text-neutral-400">
             {LINKS.map((l) => (
-              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="hover:text-fg">
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="hover:text-neutral-50">
                 {l.label}
               </a>
             ))}
             <a
               href="#consultation"
               onClick={() => setOpen(false)}
-              className="w-fit rounded-full border border-emerald/40 px-4 py-2 text-fg"
+              className="w-fit rounded-full border border-champagne/40 px-4 py-2 text-neutral-50"
             >
               Book Consultation
             </a>

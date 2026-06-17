@@ -6,15 +6,16 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import NeuralField from "./NeuralField";
 
 /**
- * Fixed, full-bleed background canvas, strictly decorative:
- * - `z-[-1]` keeps it behind every DOM section.
- * - `pointer-events-none` guarantees it never intercepts clicks/scroll.
- * - `dpr` capped at 1.5 protects frame rate on high-density displays —
- *   bloom + ~480 nodes + edges + pulses is comparatively heavy.
+ * Fixed, full-bleed background canvas — now deliberately restrained.
+ * - `z-[-1]` + `pointer-events-none`: strictly decorative, behind everything.
+ * - `opacity-35` on the wrapper: the 3D layer is a texture, not a focal
+ *   point. This is applied to the wrapper (not individual materials) so it
+ *   uniformly dims nodes, edges, pulses and bloom together in one pass.
+ * - `dpr` capped at 1.5 protects frame rate on high-density displays.
  */
 export default function SceneCanvas() {
   return (
-    <div className="fixed inset-0 z-[-1] pointer-events-none">
+    <div className="fixed inset-0 z-[-1] pointer-events-none opacity-35">
       <Canvas
         dpr={[1, 1.5]}
         gl={{ antialias: false, powerPreference: "high-performance" }}
@@ -29,10 +30,10 @@ export default function SceneCanvas() {
 
         <EffectComposer multisampling={0}>
           <Bloom
-            intensity={1.4}
-            luminanceThreshold={0.12}
+            intensity={0.9}
+            luminanceThreshold={0.25}
             luminanceSmoothing={0.85}
-            radius={0.85}
+            radius={0.8}
             mipmapBlur
           />
         </EffectComposer>

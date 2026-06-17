@@ -19,9 +19,8 @@ const WORDS: { text: string; emphasis?: boolean }[] = [
 /**
  * Massive, bold typography that fades/scales/de-blurs continuously as the
  * user scrolls through it (useScroll + useTransform against live scroll
- * progress, not a one-shot whileInView reveal) — and per the brief's own
- * literal class names: font-sans + tracking-tighter, not the display serif
- * used for the brand headline elsewhere.
+ * progress, not a one-shot whileInView reveal). font-sans + tracking-tighter
+ * per the brief's literal class names.
  */
 export default function Manifesto() {
   const ref = useRef<HTMLDivElement>(null);
@@ -36,9 +35,9 @@ export default function Manifesto() {
     <section ref={ref} className="relative z-10 flex min-h-[90vh] items-center justify-center px-6">
       <motion.div style={{ opacity, scale, filter }}>
         <GlassPanel className="px-8 py-10 sm:px-14 sm:py-14">
-          <p className="max-w-4xl text-center font-sans text-4xl font-bold leading-[1.1] tracking-tighter text-fg sm:text-6xl md:text-7xl">
+          <p className="max-w-4xl text-center font-sans text-4xl font-bold leading-[1.1] tracking-tighter text-neutral-50 sm:text-6xl md:text-7xl">
             {WORDS.map((w, i) => (
-              <span key={i} className={w.emphasis ? "text-emerald" : undefined}>
+              <span key={i} className={w.emphasis ? "text-champagne" : undefined}>
                 {w.text}{" "}
               </span>
             ))}

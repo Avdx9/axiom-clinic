@@ -4,8 +4,9 @@ import { useMemo, useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const EMERALD = new THREE.Color("#2ee6a8");
-const CYAN = new THREE.Color("#5be3ff");
+const CHAMPAGNE = new THREE.Color("#d4af37");
+const DEEP_BRONZE = new THREE.Color("#5a4115"); // darker end of the same hue, for depth without a second color
+const PULSE_COLOR = new THREE.Color("#f5e6b8"); // warm near-white, stays in the gold family
 
 interface NeuralFieldProps {
   nodeCount?: number;
@@ -15,7 +16,7 @@ interface NodeData {
   position: THREE.Vector3;
   phase: number;
   baseScale: number;
-  colorMix: number; // 0 -> emerald, 1 -> cyan
+  colorMix: number; // 0 -> champagne, 1 -> deep bronze
 }
 
 interface EdgeData {
@@ -96,7 +97,7 @@ export default function NeuralField({ nodeCount = 480 }: NeuralFieldProps) {
         const key = i < j ? `${i}-${j}` : `${j}-${i}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        tmpColor.copy(EMERALD).lerp(CYAN, (nodes[i].colorMix + nodes[j].colorMix) / 2);
+        tmpColor.copy(CHAMPAGNE).lerp(DEEP_BRONZE, (nodes[i].colorMix + nodes[j].colorMix) / 2);
         list.push({ a: i, b: j, color: tmpColor.clone() });
       }
     }
@@ -137,7 +138,7 @@ export default function NeuralField({ nodeCount = 480 }: NeuralFieldProps) {
     const colors = new Float32Array(nodes.length * 3);
     const tmp = new THREE.Color();
     nodes.forEach((n, i) => {
-      tmp.copy(EMERALD).lerp(CYAN, n.colorMix);
+      tmp.copy(CHAMPAGNE).lerp(DEEP_BRONZE, n.colorMix);
       colors[i * 3] = tmp.r;
       colors[i * 3 + 1] = tmp.g;
       colors[i * 3 + 2] = tmp.b;
@@ -229,7 +230,7 @@ export default function NeuralField({ nodeCount = 480 }: NeuralFieldProps) {
 
       <instancedMesh ref={pulseMeshRef} args={[undefined, undefined, pulses.length]} frustumCulled={false}>
         <sphereGeometry args={[1, 8, 8]} />
-        <meshBasicMaterial color="#eafff5" toneMapped={false} />
+        <meshBasicMaterial color="#f5e6b8" toneMapped={false} />
       </instancedMesh>
     </group>
   );

@@ -5,15 +5,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#0a0a0a",
-        surface: "#121212",
-        fg: "#f5f5f0",
-        muted: "#8a8a85",
-        emerald: "#2ee6a8",
-        cyan: "#5be3ff",
+        // Single accent token — everything else in the palette is plain
+        // Tailwind neutral-*, used directly (bg-neutral-950, text-neutral-50,
+        // text-neutral-400) rather than aliased, so the classes in this
+        // codebase match the literal utility names in the brief.
+        champagne: "#d4af37",
       },
       fontFamily: {
-        display: ["var(--font-display)", "serif"],
+        // Clean sans everywhere — no display serif. Headers lean on
+        // font-bold + tracking-tighter for weight instead of a second
+        // typeface, per the "ultra-premium clinical" directive.
         sans: ["var(--font-body)", "ui-sans-serif", "sans-serif"],
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },

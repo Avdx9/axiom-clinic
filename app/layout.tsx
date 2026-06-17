@@ -1,21 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-// Body copy — quiet, highly legible workhorse
+// Body + display — one clean sans face for everything, per the
+// "fonts are clean, sans-serif, and track tightly" directive.
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-body",
-  display: "swap",
-});
-
-// Display face — soft editorial serif, used sparingly for emotive headlines.
-// Contrasts deliberately with the clinical mono below.
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
   display: "swap",
 });
 
@@ -39,11 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${fraunces.variable} ${jetbrainsMono.variable}`}
-    >
-      <body className="bg-bg font-sans text-fg antialiased selection:bg-emerald/30 selection:text-fg">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className="bg-neutral-950 font-sans text-neutral-50 antialiased selection:bg-champagne/30 selection:text-neutral-50">
         {children}
       </body>
     </html>
