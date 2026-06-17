@@ -1,5 +1,7 @@
 import SceneCanvas from "@/components/canvas/SceneCanvas";
+import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/sections/Hero";
+import About from "@/components/sections/About";
 import Manifesto from "@/components/sections/Manifesto";
 import Services from "@/components/sections/Services";
 import BookConsultation from "@/components/sections/BookConsultation";
@@ -10,8 +12,10 @@ export default function Home() {
       {/* Fixed, full-screen WebGL background — sits behind every section */}
       <SceneCanvas />
 
-      {/* Scrolling DOM content, layered above the canvas */}
+      {/* Fixed transparent nav, then the scrolling DOM content */}
+      <Navbar />
       <Hero />
+      <About />
       <Manifesto />
       <Services />
       <BookConsultation />

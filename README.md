@@ -20,16 +20,40 @@ app/
   globals.css         Tailwind layers, reduced-motion + focus-ring rules
 components/
   canvas/
-    SceneCanvas.tsx    Fixed full-screen <Canvas>, EffectComposer + Bloom
-    ParticleField.tsx  InstancedMesh particle system (the 3D signature element)
+    SceneCanvas.tsx    Fixed full-screen <Canvas>, z-[-1], EffectComposer + Bloom
+    NeuralField.tsx    InstancedMesh nodes + LineSegments edges + traveling pulses
+  layout/
+    Navbar.tsx          Fixed transparent nav, gains a glass background on scroll
   sections/
-    Hero.tsx           "Performance Aesthetics" headline, staggered word reveal
-    Manifesto.tsx       Scroll-scrubbed statement (useScroll + useTransform)
-    Services.tsx        Treatment menu grid
+    Hero.tsx            "Performance Aesthetics" headline, staggered word reveal
+    About.tsx            Clinic story, placeholder photography, credential chips
+    Manifesto.tsx         Scroll-scrubbed statement (useScroll + useTransform)
+    Services.tsx          Treatment menu grid, one image + lucide icon per card
     BookConsultation.tsx CTA + footer
   ui/
     RevealText.tsx      Shared Framer Motion primitives (block fade, word stagger)
+    GlassPanel.tsx        Frosted backdrop used behind every text block
+lib/
+  placeholderImages.ts   Single source of truth for the Unsplash placeholder
 ```
+
+**On the particle system**: the brief asked for something that reads as a
+"digital nervous system / data flow" rather than ambient dust. `NeuralField`
+is a volumetric sphere of nodes (one `InstancedMesh`, one draw call),
+connected to their nearest neighbours via a single `LineSegments` draw call,
+with a small population of pulses traveling along those edges on a loop —
+that's the "data flow" read. All three live under one rotating `<group>` so
+they never drift out of sync, and `NeuralField.tsx` explicitly disposes the
+hand-built line geometry on unmount (it's not JSX-declared, so React Three
+Fiber's automatic disposal doesn't cover it).
+
+**On the placeholder images**: every `<img>` in `About`/`Services` points at
+crop/desaturation variants of the single Unsplash URL from the brief
+(`lib/placeholderImages.ts`), not several different guessed photo IDs —
+guessed IDs frequently 404. Swap `BASE_IMAGE` for real clinic photography
+before launch. Plain `<img>` tags are used instead of `next/image` on
+purpose, to avoid needing to allowlist `images.unsplash.com` in
+`next.config.mjs` for a temporary placeholder.
 
 ## Design tokens
 
