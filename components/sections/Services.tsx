@@ -53,7 +53,7 @@ const TREATMENTS = [
 
 export default function Services() {
   return (
-    <section id="services" className="relative z-10 px-6 py-28 sm:px-10 lg:px-16">
+    <section id="services" className="relative z-10 scroll-mt-24 px-6 py-28 sm:px-10 lg:px-16">
       <RevealText className="mb-16 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <h2 className="font-serif text-4xl font-medium tracking-tight text-stone-900 sm:text-5xl">
           The Treatment Menu

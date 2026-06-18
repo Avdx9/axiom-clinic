@@ -12,15 +12,29 @@ interface RevealTextProps {
 }
 
 /**
- * Generic fade-up-on-scroll block. Use for paragraphs, labels, rows of
- * cards — anything that should arrive once, gently, and stay.
+ * Fade-up reveal, triggered on mount rather than on scroll-into-view.
+ *
+ * This used to be `whileInView`-gated (IntersectionObserver-based), which
+ * works fine for a genuine "scroll down and watch it appear" reveal but
+ * has a sharp edge: an element that's already inside the viewport at the
+ * moment it mounts — above-the-fold content on initial load, or any
+ * section a nav/anchor link jumps straight to — never gets an "entering
+ * the viewport" transition for the observer to detect, so it can get
+ * stuck at its hidden initial state indefinitely. That's what caused the
+ * Hero headline and the consultation CTA to render blank. `animate`
+ * sidesteps the whole problem: it always plays once mounted, regardless
+ * of scroll position or how the user arrived at the section.
+ *
+ * Trade-off: sections no longer progressively reveal as you scroll to
+ * each one — everything animates in together shortly after page load.
+ * Reliability over that flourish, given it was the source of two
+ * separate visible bugs.
  */
 export function RevealText({ children, className = "", delay = 0 }: RevealTextProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.9, delay, ease: EASE_OUT }}
       className={className}
     >
@@ -35,9 +49,8 @@ interface RevealWordsProps {
 }
 
 /**
- * Word-by-word stagger reveal for hero-scale headlines. Each word is
- * clipped by an overflow-hidden wrapper and slides up from underneath it —
- * the "type carries personality" treatment for the page's biggest type.
+ * Word-by-word stagger reveal — same mount-triggered approach as above,
+ * for the same reason.
  */
 export function RevealWords({ text, className = "" }: RevealWordsProps) {
   const words = text.split(" ");
@@ -48,8 +61,7 @@ export function RevealWords({ text, className = "" }: RevealWordsProps) {
           <motion.span
             className="inline-block"
             initial={{ y: "110%" }}
-            whileInView={{ y: "0%" }}
-            viewport={{ once: true }}
+            animate={{ y: "0%" }}
             transition={{ duration: 0.7, delay: i * 0.06, ease: EASE_OUT }}
           >
             {word}

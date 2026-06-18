@@ -8,7 +8,7 @@ export default function BookConsultation() {
   return (
     <section
       id="consultation"
-      className="relative z-10 flex min-h-[80vh] flex-col items-center justify-center gap-10 px-6 py-28 text-center"
+      className="relative z-10 flex min-h-[80vh] scroll-mt-24 flex-col items-center justify-center gap-10 px-6 py-28 text-center"
     >
       <GlassPanel className="flex max-w-3xl flex-col items-center gap-8 px-8 py-12 sm:px-14 sm:py-16">
         <RevealText className="font-mono text-xs uppercase tracking-[0.3em] text-gold">

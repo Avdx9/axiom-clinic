@@ -13,7 +13,7 @@ const CREDENTIALS = [
 
 export default function About() {
   return (
-    <section id="about" className="relative z-10 px-6 py-28 sm:px-10 lg:px-16">
+    <section id="about" className="relative z-10 scroll-mt-24 px-6 py-28 sm:px-10 lg:px-16">
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
         {/* Full color, soft shadow, rounded corners — no desaturation this
             round; the warm palette wants real warmth in the photography. */}
