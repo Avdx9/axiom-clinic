@@ -1,6 +1,6 @@
-# AXIOM — Performance Aesthetics
+# AURA — The Architecture of Longevity
 
-A dark-mode, WebGL-backed single page for a London aesthetics clinic. Built with Next.js (App Router), Tailwind, Framer Motion, React Three Fiber + Drei, and `@react-three/postprocessing` for the bloom glow.
+A warm, "clinical luxury" single page for a London longevity clinic. Built with Next.js (App Router), Tailwind, Framer Motion, and React Three Fiber for a soft, undulating "liquid silk" background surface.
 
 ## Run it
 
@@ -15,95 +15,88 @@ Open http://localhost:3000.
 
 ```
 app/
-  layout.tsx        Loads the three font roles, sets metadata
-  page.tsx           Stacks the canvas + sections
+  layout.tsx        Loads the font trio, sets metadata
+  page.tsx           Stacks the canvas + sections + footer
   globals.css         Tailwind layers, reduced-motion + focus-ring rules
 components/
   canvas/
-    SceneCanvas.tsx    Fixed full-screen <Canvas>, z-[-1], EffectComposer + Bloom
-    NeuralField.tsx    InstancedMesh nodes + LineSegments edges + traveling pulses
+    SceneCanvas.tsx    Fixed full-screen <Canvas>, z-[-1], warm lighting, no postprocessing
+    SilkSurface.tsx    The undulating plane — see "The silk surface" below
   layout/
-    Navbar.tsx          Fixed transparent nav, gains a glass background on scroll
+    Navbar.tsx          Fixed transparent nav, gains a light glass background on scroll
+    Footer.tsx           Solid stone-950 anchor at the bottom of the page
   sections/
-    Hero.tsx            "Performance Aesthetics" headline, staggered word reveal
-    About.tsx            Clinic story, placeholder photography, credential chips
+    Hero.tsx            "The Architecture of Longevity" headline
+    About.tsx            Clinic story, full-color photography, credential chips
     Manifesto.tsx         Scroll-scrubbed statement (useScroll + useTransform)
     Services.tsx          Treatment menu grid, one image + lucide icon per card
-    BookConsultation.tsx CTA + footer
+    BookConsultation.tsx CTA panel
   ui/
     RevealText.tsx      Shared Framer Motion primitives (block fade, word stagger)
-    GlassPanel.tsx        Frosted backdrop used behind every text block
+    GlassPanel.tsx        Translucent white glass panel used behind every text block
 lib/
   placeholderImages.ts   Single source of truth for the Unsplash placeholder
 ```
 
-**On the particle system**: the brief asked for something that reads as a
-"digital nervous system / data flow" rather than ambient dust. `NeuralField`
-is a volumetric sphere of nodes (one `InstancedMesh`, one draw call),
-connected to their nearest neighbours via a single `LineSegments` draw call,
-with a small population of pulses traveling along those edges on a loop —
-that's the "data flow" read. All three live under one rotating `<group>` so
-they never drift out of sync, and `NeuralField.tsx` explicitly disposes the
-hand-built line geometry on unmount (it's not JSX-declared, so React Three
-Fiber's automatic disposal doesn't cover it).
-
-**On the placeholder images**: every `<img>` in `About`/`Services` points at
-crop/desaturation variants of the single Unsplash URL from the brief
-(`lib/placeholderImages.ts`), not several different guessed photo IDs —
-guessed IDs frequently 404. Swap `BASE_IMAGE` for real clinic photography
-before launch. Plain `<img>` tags are used instead of `next/image` on
-purpose, to avoid needing to allowlist `images.unsplash.com` in
-`next.config.mjs` for a temporary placeholder.
-
 ## Design tokens
 
-| Token       | Source                          | Use                                  |
-|-------------|----------------------------------|---------------------------------------|
-| `neutral-950` | Tailwind built-in (`#0a0a0a`)  | Page background                      |
-| `neutral-50`  | Tailwind built-in (~white)    | Headers, high-contrast text          |
-| `neutral-400` | Tailwind built-in (light grey)| Paragraph/body copy                  |
-| `neutral-800/50` | Tailwind built-in          | Hairline borders on glass panels     |
-| `champagne` | Custom token, `#d4af37`         | The one accent — buttons, eyebrows, icons, active states. Used sparingly. |
+| Token         | Source                     | Use                                  |
+|---------------|------------------------------|----------------------------------------|
+| `stone-50`    | Tailwind built-in (`#fafaf9`) | Page background (warm off-white)     |
+| `stone-900`   | Tailwind built-in            | Primary text                          |
+| `stone-500`   | Tailwind built-in            | Secondary/body text                   |
+| `stone-950`   | Tailwind built-in            | Footer background only                |
+| `gold`        | Custom token, `#b49a5b`      | The one accent — buttons, eyebrows, icons. Used sparingly. |
 
-There's deliberately no second accent hue anymore — the old emerald/cyan
-duo is gone. Where the particle field needs visual depth (`NeuralField.tsx`),
-it varies *lightness* within the champagne hue (a deep bronze `#5a4115` at
-the dark end) rather than introducing a second color, so the canvas reads
-as "subtle gold texture" rather than "neon."
+One accent color, applied narrowly, on purpose — anywhere you see warmth
+or visual interest beyond that should come from photography, the silk
+surface, or typography, not from adding a second hue.
 
-Fonts: a single clean sans (**Inter**) for both display and body text —
-headers lean on `font-bold tracking-tighter` for visual weight instead of
-a second typeface. **JetBrains Mono** still handles clinical labels, codes,
-and prices.
+**Fonts**: Cormorant Garamond for display headlines (`font-serif`, via an
+overridden Tailwind token so you just use the standard utility class),
+Inter for body copy, JetBrains Mono for clinical labels/codes/prices. The
+contrast between the soft serif and the clinical mono is the brand's one
+deliberate typographic tension.
 
-## Canvas restraint
+## The silk surface
 
-The 3D layer is intentionally backed off so it never competes with text:
+`SilkSurface.tsx` is a single `PlaneGeometry` (80×80 segments, ~6,500
+vertices) deformed every frame by a two-term sine height field, tilted to
+recede away from the camera like a sheet of fabric on a table. Two
+implementation choices are worth knowing about if you're modifying it:
 
-- The entire `<Canvas>` wrapper in `SceneCanvas.tsx` carries `opacity-35` —
-  applied once to the wrapper div, which dims nodes, edges, pulses and
-  Bloom together, rather than tuning five separate material opacities.
-- Bloom `intensity` was dropped from `1.4` to `0.9` and `luminanceThreshold`
-  raised to `0.25`, so it glows just enough to read as ambient light rather
-  than as the page's main visual event.
-- Every text block additionally sits on its own `GlassPanel`
-  (`backdrop-blur-xl bg-neutral-950/60 border-neutral-800/50`) — even with
-  the canvas this restrained, legibility doesn't rely on opacity alone.
+- **Normals are computed analytically, not via `computeVertexNormals()`.**
+  For a height field `z = f(x, y)`, the surface normal at any point is
+  `normalize(-∂f/∂x, -∂f/∂y, 1)`. Since the height function is just two
+  sine terms, its partial derivatives are closed-form and cheap to
+  evaluate — this avoids walking face data every frame, which is what
+  `computeVertexNormals()` does and which gets expensive fast at this
+  vertex count, 60 times a second.
+- **Base x/y positions are cached once** (`basePositions`) rather than
+  read back from the mutated position buffer each frame, so there's no
+  drift and no need to "remember" the flat geometry separately.
+- The geometry is created by hand and passed to `<mesh>` as a `geometry`
+  prop rather than declared as a JSX child, so it's outside React Three
+  Fiber's automatic disposal — `SilkSurface.tsx` disposes it explicitly
+  on unmount.
 
+There's deliberately no Bloom/EffectComposer pass on this scene — the
+brief is explicit that this aesthetic wants soft warm lighting, not a
+glow effect.
 
+## On the placeholder images
 
-## Performance & memory notes
-
-- The particle field is a **single `InstancedMesh`** (one draw call for all 6,000 particles) rather than 6,000 individual meshes — this is what keeps it inside frame budget alongside Bloom.
-- Particle positions sit on a **Fibonacci sphere**, computed once via `useMemo`. Nothing is re-randomized on render, so there's no per-frame array allocation beyond the `Object3D` reused for matrix math.
-- `frustumCulled={false}` on the instanced mesh prevents particles from incorrectly disappearing, since per-instance positions move outside the geometry's default bounding sphere.
-- **Disposal**: the effect in `ParticleField.tsx` explicitly disposes the geometry and material on unmount, in addition to React Three Fiber's own automatic disposal of JSX-declared objects — this is the explicit guarantee against leaking GPU buffers across hot-reloads or route changes.
-- `dpr` is capped at `[1, 1.5]` in `SceneCanvas.tsx` so Bloom doesn't get applied at full Retina resolution on every device — drop this further (e.g. `[1, 1]`) if you need more headroom on low-end hardware.
-- If you add more sections with their own canvases, keep this pattern (one InstancedMesh per effect) rather than scaling particle count — counts above ~10–15k will need points/sprites instead of icosahedra to stay smooth on integrated GPUs.
+The brief specified two Unsplash URLs. The first (clinic/spa interior)
+resolves and is used as-is. The second 404s outright — that photo ID
+doesn't exist — and the best visual substitutes found while searching
+turned out to be Unsplash+ (paid tier, served from `plus.unsplash.com`,
+not freely hotlinkable). Every image on the page is therefore a crop
+variant of the one confirmed, freely-licensed source
+(`lib/placeholderImages.ts`). Source a second free photo for real visual
+variety, and swap both for the clinic's real photography before launch.
 
 ## Customizing
 
-- **Copy/branding**: clinic name and copy live directly in each section component — there's no CMS layer, by design, since this is a single static page.
-- **Colors**: the accent lives in `tailwind.config.ts` → `theme.extend.colors.champagne`. Everything else uses Tailwind's built-in `neutral-*` scale directly in each component's classes (no alias) — change those class names directly if you want a different base palette. The particle gradient (`CHAMPAGNE`/`DEEP_BRONZE` consts in `NeuralField.tsx`) is separate from Tailwind and should be updated to match if you change the accent.
-- **Particle density**: change the `nodeCount` prop passed to `<NeuralField />` in `SceneCanvas.tsx`. More nodes also means more edges (capped at 700) and a slightly heavier nearest-neighbour computation on mount.
-- **Canvas presence**: the `opacity-35` wrapper class in `SceneCanvas.tsx` is the single dial for "how much background." Raise it if the canvas feels too faint after a palette change; the Bloom `intensity`/`luminanceThreshold` props are the next lever if it's the glow specifically that's too strong or too weak.
+- **Accent color**: `tailwind.config.ts` → `theme.extend.colors.gold`. Update `SilkSurface.tsx`'s material `color` prop too if you want the surface itself to shift hue.
+- **Surface intensity**: the amplitude constants `A1`/`A2` at the top of `SilkSurface.tsx` control how much the plane undulates — both are intentionally tiny (a few hundredths of a unit). Raise them gradually; this is meant to read as "breathing," not "ocean."
+- **Segment density**: `widthSegments`/`heightSegments` props on `<SilkSurface />` in `SceneCanvas.tsx`. Lower if you need more headroom on low-end devices — the per-frame cost scales linearly with vertex count.

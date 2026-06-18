@@ -1,5 +1,6 @@
 import SceneCanvas from "@/components/canvas/SceneCanvas";
 import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Manifesto from "@/components/sections/Manifesto";
@@ -19,6 +20,9 @@ export default function Home() {
       <Manifesto />
       <Services />
       <BookConsultation />
+
+      {/* Solid dark anchor at the very bottom of the page */}
+      <Footer />
     </main>
   );
 }

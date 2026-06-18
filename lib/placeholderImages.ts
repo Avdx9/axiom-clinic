@@ -1,22 +1,24 @@
 /**
  * Placeholder stock photography.
  *
- * Both base URLs below were confirmed reachable before being committed
- * here. `ABOUT_IMAGE` and `SERVICE_IMAGES` are crop variants of these two
- * sources (via Unsplash's imgix-powered `crop`/`w`/`h` params) rather than
- * several different guessed photo IDs — guessed Unsplash IDs frequently
- * 404, and a broken `<img>` is worse than a repeated source image.
+ * The brief specified two Unsplash URLs. The first (clinic/spa interior)
+ * was confirmed reachable. The second 404s — that photo ID doesn't exist —
+ * and the closest visual substitutes ("beige marble texture") found while
+ * searching are licensed under Unsplash+ (paid tier, served from
+ * plus.unsplash.com, not freely hotlinkable for a commercial site).
+ * Rather than ship a dead link or a licensing problem, every image below
+ * is a crop variant of the one confirmed, freely-licensed source.
  *
- * Swap these for the clinic's real photography before launch.
+ * Source a second free photo for real visual variety before launch, and
+ * swap both for the clinic's own photography when you have it.
  */
-const CLINICAL_BASE = "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2";
-const AESTHETIC_BASE = "https://images.unsplash.com/photo-1519415943484-9fa1873496d4";
+const CLINIC_BASE = "https://images.unsplash.com/photo-1629909613654-28e377c37b09";
 
-export const ABOUT_IMAGE = `${CLINICAL_BASE}?q=80&w=2000&fit=crop`;
+export const ABOUT_IMAGE = `${CLINIC_BASE}?q=80&w=2000&fit=crop`;
 
 export const SERVICE_IMAGES = {
-  injectables: `${AESTHETIC_BASE}?q=80&w=1200&h=900&fit=crop&crop=top`,
-  energyDevices: `${CLINICAL_BASE}?q=80&w=1200&h=900&fit=crop&crop=bottom`,
-  skinHealth: `${AESTHETIC_BASE}?q=80&w=1200&h=900&fit=crop&crop=left`,
-  recovery: `${CLINICAL_BASE}?q=80&w=1200&h=900&fit=crop&crop=right`,
+  regenerative: `${CLINIC_BASE}?q=80&w=1200&h=900&fit=crop&crop=top`,
+  diagnostics: `${CLINIC_BASE}?q=80&w=1200&h=900&fit=crop&crop=left`,
+  energyDevices: `${CLINIC_BASE}?q=80&w=1200&h=900&fit=crop&crop=bottom`,
+  recovery: `${CLINIC_BASE}?q=80&w=1200&h=900&fit=crop&crop=right`,
 };

@@ -5,39 +5,36 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { GlassPanel } from "@/components/ui/GlassPanel";
 
 const WORDS: { text: string; emphasis?: boolean }[] = [
-  { text: "Skin" },
+  { text: "Ageing" },
   { text: "is" },
   { text: "a" },
-  { text: "system.", emphasis: true },
-  { text: "We" },
-  { text: "treat", emphasis: true },
-  { text: "it" },
-  { text: "like" },
-  { text: "one." },
+  { text: "biomarker," },
+  { text: "not", emphasis: true },
+  { text: "a" },
+  { text: "sentence." },
 ];
 
 /**
- * Massive, bold typography that fades/scales/de-blurs continuously as the
- * user scrolls through it (useScroll + useTransform against live scroll
- * progress, not a one-shot whileInView reveal). font-sans + tracking-tighter
- * per the brief's literal class names.
+ * Massive, elegant typography that fades/scales/de-blurs continuously as
+ * the user scrolls through it — driven by live scroll progress
+ * (useScroll + useTransform), not a one-shot reveal.
  */
 export default function Manifesto() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
 
   const opacity = useTransform(scrollYProgress, [0, 0.35, 0.65, 1], [0, 1, 1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.35, 0.65, 1], [0.92, 1, 1, 0.96]);
+  const scale = useTransform(scrollYProgress, [0, 0.35, 0.65, 1], [0.94, 1, 1, 0.97]);
   const blurPx = useTransform(scrollYProgress, [0, 0.35, 0.65, 1], [6, 0, 0, 6]);
   const filter = useTransform(blurPx, (v) => `blur(${v}px)`);
 
   return (
-    <section ref={ref} className="relative z-10 flex min-h-[90vh] items-center justify-center px-6">
+    <section ref={ref} className="relative z-10 flex min-h-[80vh] items-center justify-center px-6">
       <motion.div style={{ opacity, scale, filter }}>
         <GlassPanel className="px-8 py-10 sm:px-14 sm:py-14">
-          <p className="max-w-4xl text-center font-sans text-4xl font-bold leading-[1.1] tracking-tighter text-neutral-50 sm:text-6xl md:text-7xl">
+          <p className="max-w-3xl text-center font-serif text-4xl font-medium leading-[1.2] tracking-tight text-stone-900 sm:text-6xl">
             {WORDS.map((w, i) => (
-              <span key={i} className={w.emphasis ? "text-champagne" : undefined}>
+              <span key={i} className={w.emphasis ? "text-gold" : undefined}>
                 {w.text}{" "}
               </span>
             ))}

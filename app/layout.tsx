@@ -1,16 +1,28 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, Cormorant_Garamond, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-// Body + display — one clean sans face for everything, per the
-// "fonts are clean, sans-serif, and track tightly" directive.
+// Body copy — clean, highly legible sans
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",
 });
 
-// Utility / data face — clinical, monospaced, used for labels, codes, prices
+// Display — an elegant, high-contrast serif for massive headlines.
+// Cormorant Garamond rather than the more expected Playfair Display: a
+// little more delicate and jewel-like, suits a longevity/skin clinic
+// better than the slightly heavier, more "generic luxury" Playfair look.
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+// Utility / data face — clinical labels, treatment codes, prices. Kept
+// deliberately monospaced even in this warm palette: the contrast between
+// soft serif headlines and clinical mono data is the brand's signature.
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
@@ -19,9 +31,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AXIOM — Performance Aesthetics, London",
+  title: "AURA — The Architecture of Longevity, London",
   description:
-    "A Mayfair aesthetics clinic for evidence-led injectables, energy-based devices and recovery protocols. Clinical precision, engineered results.",
+    "A Harley Street-adjacent longevity clinic for regenerative medicine, diagnostics, and recovery — warm clinical luxury, evidence-led protocols.",
 };
 
 export default function RootLayout({
@@ -30,8 +42,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="bg-neutral-950 font-sans text-neutral-50 antialiased selection:bg-champagne/30 selection:text-neutral-50">
+    <html
+      lang="en"
+      className={`${inter.variable} ${cormorant.variable} ${jetbrainsMono.variable}`}
+    >
+      <body className="bg-stone-50 font-sans text-stone-900 antialiased selection:bg-gold/30 selection:text-stone-900">
         {children}
       </body>
     </html>
